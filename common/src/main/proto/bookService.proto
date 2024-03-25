@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package kulbaba.oleh.bookstore;
+
+message CreateBook {}
+
+message BookInfo {}
+
+message CreateBookRequest {}
+
+message
