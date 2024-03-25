@@ -4,10 +4,32 @@ import "google/protobuf/empty.proto";
 
 package kulbaba.oleh.bookstore;
 
-message CreateBook {}
+message Book {
+  string id = 1;
+  string title = 2;
+  string author = 3;
+  string isbn = 4;
+  int64 quantity = 5;
+}
 
-message BookInfo {}
+message BookId {
+  string id = 1;
+}
 
-message CreateBookRequest {}
+message BookInfoList {
+  repeated Book books = 1;
+}
 
-message
+message CreateBookRequest {
+  string title = 1;
+  string author = 2;
+  string isbn = 3;
+  int64 quantity = 4;
+}
+
+service BookService {
+  rpc create(CreateBookRequest) returns (Book);
+  rpc getBtId(BookId) returns (Book);
+  rpc updateById(Book) returns (Book);
+  rpc deleteById(BookId) returns (Book);
+}
