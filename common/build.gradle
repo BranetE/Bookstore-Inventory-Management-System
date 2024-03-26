@@ -7,17 +7,7 @@ buildscript {
 }
 
 plugins {
-    id 'java'
     id 'com.google.protobuf' version "${protobufPluginVersion}"
-}
-
-java {
-    targetCompatibility = '21'
-    sourceCompatibility = '21'
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
