@@ -19,9 +19,11 @@ import java.util.UUID;
 @Table(name = "books")
 public class Book {
     @Id
-    private UUID id = UUID.randomUUID();
+    private UUID id;
     @Column
     private String title;
+    @Column
+    private String author;
     @Column
     private String isbn;
     @Column
