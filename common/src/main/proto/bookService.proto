@@ -31,14 +31,10 @@ message BookIdRequest {
   string id = 1;
 }
 
-message BookInfoListResponse {
-  repeated BookInfoResponse books = 1;
-}
-
 service BookService {
   rpc create(CreateBookRequest) returns (BookInfoResponse);
   rpc getById(BookIdRequest) returns (BookInfoResponse);
-  rpc getAll(google.protobuf.Empty) returns (BookInfoListResponse);
+  rpc getAll(google.protobuf.Empty) returns (stream BookInfoResponse);
   rpc updateById(UpdateBookRequest) returns (BookInfoResponse);
   rpc deleteById(BookIdRequest) returns (google.protobuf.Empty);
 }
