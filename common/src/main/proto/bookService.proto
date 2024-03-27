@@ -37,7 +37,7 @@ message BookInfoListResponse {
 
 service BookService {
   rpc create(CreateBookRequest) returns (BookInfoResponse);
-  rpc getBtId(BookIdRequest) returns (BookInfoResponse);
+  rpc getById(BookIdRequest) returns (BookInfoResponse);
   rpc getAll(google.protobuf.Empty) returns (BookInfoListResponse);
   rpc updateById(UpdateBookRequest) returns (BookInfoResponse);
   rpc deleteById(BookIdRequest) returns (google.protobuf.Empty);
