@@ -33,7 +33,7 @@ public class BookService extends BookServiceImplBase {
     }
 
     @Override
-    public void getBtId(BookIdRequest request, StreamObserver<BookInfoResponse> responseObserver) {
+    public void getById(BookIdRequest request, StreamObserver<BookInfoResponse> responseObserver) {
         BookInfoResponse response = bookRepository.findById(UUID.fromString(request.getId()))
                 .map(bookMapper::bookToBookInfoResponse)
                 .orElseThrow(EntityNotFoundException::new);

@@ -9,6 +9,7 @@ import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -17,7 +18,6 @@ public interface BookMapper {
     @Mapping(target = "id", expression = "java(UUID.randomUUID())")
     Book createBookRequestToBook(CreateBookRequest request);
     BookInfoResponse bookToBookInfoResponse(Book book);
-
     void updateBookFromUpdateBookRequest(@MappingTarget Book book, UpdateBookRequest request);
 
     default BookInfoListResponse bookListToBookInfoListResponse(List<Book> bookList){
