@@ -1,17 +1,4 @@
-
 allprojects {
-
-    apply plugin: "java"
-
-    java {
-        targetCompatibility = '21'
-        sourceCompatibility = '21'
-    }
-
     group = 'com.kulbaba.oleh.bookstore'
     version = '0.0.1-SNAPSHOT'
-
-    repositories {
-        mavenCentral()
-    }
 }
