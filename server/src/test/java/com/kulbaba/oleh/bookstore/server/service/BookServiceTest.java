@@ -4,8 +4,6 @@ import com.google.protobuf.Empty;
 import com.kulbaba.oleh.bookstore.server.entity.Book;
 import com.kulbaba.oleh.bookstore.server.mapper.BookMapper;
 import com.kulbaba.oleh.bookstore.server.repository.BookRepository;
-import io.grpc.stub.StreamObserver;
-import kulbaba.oleh.bookstore.BookServiceOuterClass.BookInfoListResponse;
 import kulbaba.oleh.bookstore.BookServiceOuterClass.UpdateBookRequest;
 import kulbaba.oleh.bookstore.BookServiceOuterClass.BookInfoResponse;
 import kulbaba.oleh.bookstore.BookServiceOuterClass.BookIdRequest;
@@ -17,26 +15,25 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BookGrpcServiceTest {
+class BookServiceTest {
     @Mock
     BookRepository bookRepository;
     @Spy
     BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
-    @Mock
-    StreamObserver streamObserver;
     @InjectMocks
-    BookGrpcService bookGrpcService;
+    BookService bookService;
 
     private Book getRandomBook() {
         Book book = new Book();
@@ -49,7 +46,6 @@ class BookGrpcServiceTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void createTest() {
         CreateBookRequest request = CreateBookRequest.newBuilder()
                 .setTitle("NewBook")
@@ -60,17 +56,28 @@ class BookGrpcServiceTest {
 
         Book book = getRandomBook();
 
-        doReturn(book).when(bookMapper).createBookRequestToBook(request);
-        doReturn(book).when(bookRepository).save(book);
+        doReturn(Mono.just(book)).when(bookRepository).save(any(Book.class));
 
-        bookGrpcService.create(request, streamObserver);
+        Mono<BookInfoResponse> result = bookService.create(request);
+
+        BookInfoResponse expected = BookInfoResponse.newBuilder()
+                .setTitle("NewBook")
+                .setAuthor("John Doe")
+                .setIsbn("978-123-456-7890-X")
+                .setQuantity(20L)
+                .build();
+
 
         verify(bookMapper).createBookRequestToBook(request);
-        verify(bookRepository).save(book);
+        verify(bookRepository).save(any(Book.class));
+
+        StepVerifier
+                .create(result)
+                .expectNext(Mono.just(expected).block())
+                .verifyComplete();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void getByIdTest() {
         BookIdRequest request = BookIdRequest.newBuilder()
                 .setId(UUID.randomUUID().toString())
@@ -78,67 +85,81 @@ class BookGrpcServiceTest {
 
         Book book = getRandomBook();
 
-        BookInfoResponse bookInfoResponse = BookInfoResponse.getDefaultInstance();
+        doReturn(Mono.just(book)).when(bookRepository).findById(UUID.fromString(request.getId()));
 
-        doReturn(Optional.of(book)).when(bookRepository).findById(UUID.fromString(request.getId()));
-        doReturn(bookInfoResponse).when(bookMapper).bookToBookInfoResponse(book);
+        BookInfoResponse expected = BookInfoResponse.newBuilder()
+                .setTitle("NewBook")
+                .setAuthor("John Doe")
+                .setIsbn("978-123-456-7890-X")
+                .setQuantity(20L)
+                .build();
 
-        bookGrpcService.getById(request, streamObserver);
+        Mono<BookInfoResponse> result = bookService.getById(request);
 
         verify(bookRepository).findById(UUID.fromString(request.getId()));
-        verify(bookMapper).bookToBookInfoResponse(book);
+         StepVerifier
+                 .create(result)
+                 .expectNext(Mono.just(expected).block())
+                 .verifyComplete();
+
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void getAllTest() {
         Empty request = Empty.getDefaultInstance();
 
-        List<Book> randomBookList = List.of(getRandomBook());
+        Book book = getRandomBook();
 
-        doReturn(randomBookList).when(bookRepository).findAll();
-        doReturn(BookInfoListResponse.getDefaultInstance()).when(bookMapper).bookListToBookInfoListResponse(randomBookList);
+        doReturn(Flux.just(book)).when(bookRepository).findAll();
 
-        bookGrpcService.getAll(request, streamObserver);
+        Flux<BookInfoResponse> result = bookService.getAll();
 
         verify(bookRepository).findAll();
-        verify(bookMapper).bookListToBookInfoListResponse(randomBookList);
+
+        StepVerifier
+                .create(result)
+                .expectNextCount(1L)
+                .verifyComplete();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void updateTest() {
         UpdateBookRequest request = UpdateBookRequest.newBuilder()
-                .setTitle("NewBook")
+                .setTitle("UpdatedBook")
                 .setId(UUID.randomUUID().toString())
-                .setAuthor("John Doe")
-                .setIsbn("978-123-456-7890-X")
                 .build();
 
         Book book = getRandomBook();
 
-        when(bookRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(book));
-        doNothing().when(bookMapper).updateBookFromUpdateBookRequest(book, request);
-        when(bookRepository.save(book)).thenReturn(book);
+        when(bookRepository.findById(UUID.fromString(request.getId()))).thenReturn(Mono.just(book));
+        when(bookRepository.save(book)).thenReturn(Mono.just(book));
 
-        bookGrpcService.updateById(request, streamObserver);
+        Mono<BookInfoResponse> result = bookService.updateById(request);
 
-        verify(bookRepository).findById(UUID.fromString(request.getId()));
-        verify(bookMapper).updateBookFromUpdateBookRequest(book, request);
-        verify(bookRepository).save(book);
+        StepVerifier
+                .create(result)
+                .expectNextMatches(res -> res.getTitle().equals(request.getTitle()))
+                .expectComplete()
+                .verify();
+
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void deleteByIdTest() {
         BookIdRequest request = BookIdRequest.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .build();
 
-        doNothing().when(bookRepository).deleteById(UUID.fromString(request.getId()));
+        doReturn(Mono.empty()).when(bookRepository).deleteById(UUID.fromString(request.getId()));
 
-        bookGrpcService.deleteById(request, streamObserver);
+        Mono<Empty> result = bookService.deleteById(request);
 
         verify(bookRepository).deleteById(UUID.fromString(request.getId()));
+
+        StepVerifier
+                .create(result)
+                .expectNext(Mono.just(Empty.newBuilder().build()).block())
+                .expectComplete()
+                .verify();
     }
 }
