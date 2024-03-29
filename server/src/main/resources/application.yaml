@@ -5,11 +5,20 @@ grpc:
 spring:
   application:
     name: server
-  jpa:
-    hibernate:
-      ddl-auto: create
-  datasource:
+  r2dbc:
     username: postgres
     password: root
+    url: r2dbc:postgresql://localhost:5432/book_store
+  data:
+    jdbc:
+      repositories:
+        enabled: true
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yaml
     url: jdbc:postgresql://localhost:5432/book_store
-    driver-class-name: org.postgresql.Driver
+    user: postgres
+    password: root
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG # for queries
+    io.r2dbc.postgresql.PARAM: DEBUG
