@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=book_store
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+  bookstore:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    depends_on:
+      - database
+    environment:
+      - DATASOURCE_URL=postgresql://database:5432/book_store
+      - DATASOURCE_USER=postgres
+      - DATASOURCE_PASSWORD=root
+volumes:
+  db: {}

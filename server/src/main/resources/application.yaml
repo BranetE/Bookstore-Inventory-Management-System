@@ -6,18 +6,18 @@ spring:
   application:
     name: server
   r2dbc:
-    username: postgres
-    password: root
-    url: r2dbc:postgresql://localhost:5432/book_store
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
+    url: r2dbc:${DATASOURCE_URL}
   data:
     jdbc:
       repositories:
         enabled: true
   liquibase:
     change-log: db/changelog/db.changelog-master.yaml
-    url: jdbc:postgresql://localhost:5432/book_store
-    user: postgres
-    password: root
+    url: jdbc:${DATASOURCE_URL}
+    user: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
 logging:
   level:
     io.r2dbc.postgresql.QUERY: DEBUG # for queries

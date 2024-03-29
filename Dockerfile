@@ -9,5 +9,5 @@ COPY build.gradle settings.gradle ./
 
 EXPOSE 9090
 
-RUN gradle clean bootRun
+CMD ["gradle", "bootRun", "x-test"]
 
