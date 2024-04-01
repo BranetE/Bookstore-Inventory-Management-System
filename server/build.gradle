@@ -40,7 +40,10 @@ dependencies {
 
     testImplementation 'net.devh:grpc-client-spring-boot-starter:3.0.0.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.citrusframework:citrus-base:4.2.0'
+    testImplementation 'org.citrusframework:citrus-sql:4.2.0'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.citrusframework:citrus-junit5:4.2.0'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'io.projectreactor:reactor-test:3.6.4'

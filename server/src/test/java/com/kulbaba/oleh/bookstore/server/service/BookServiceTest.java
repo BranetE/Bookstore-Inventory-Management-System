@@ -1,6 +1,7 @@
 package com.kulbaba.oleh.bookstore.server.service;
 
 import com.google.protobuf.Empty;
+import com.kulbaba.oleh.bookstore.server.ModelUtils;
 import com.kulbaba.oleh.bookstore.server.entity.Book;
 import com.kulbaba.oleh.bookstore.server.mapper.BookMapper;
 import com.kulbaba.oleh.bookstore.server.repository.BookRepository;
@@ -47,12 +48,7 @@ class BookServiceTest {
 
     @Test
     void createTest() {
-        CreateBookRequest request = CreateBookRequest.newBuilder()
-                .setTitle("NewBook")
-                .setAuthor("John Doe")
-                .setIsbn("978-123-456-7890-X")
-                .setQuantity(20L)
-                .build();
+        CreateBookRequest request = ModelUtils.defaultCreateBookRequest();
 
         Book book = getRandomBook();
 
@@ -60,12 +56,7 @@ class BookServiceTest {
 
         Mono<BookInfoResponse> result = bookService.create(request);
 
-        BookInfoResponse expected = BookInfoResponse.newBuilder()
-                .setTitle("NewBook")
-                .setAuthor("John Doe")
-                .setIsbn("978-123-456-7890-X")
-                .setQuantity(20L)
-                .build();
+        BookInfoResponse expected = ModelUtils.defaultBookInfoResponse();
 
 
         verify(bookMapper).createBookRequestToBook(request);
@@ -79,20 +70,13 @@ class BookServiceTest {
 
     @Test
     void getByIdTest() {
-        BookIdRequest request = BookIdRequest.newBuilder()
-                .setId(UUID.randomUUID().toString())
-                .build();
+        BookIdRequest request = ModelUtils.defaultBookIdRequest();
 
         Book book = getRandomBook();
 
         doReturn(Mono.just(book)).when(bookRepository).findById(UUID.fromString(request.getId()));
 
-        BookInfoResponse expected = BookInfoResponse.newBuilder()
-                .setTitle("NewBook")
-                .setAuthor("John Doe")
-                .setIsbn("978-123-456-7890-X")
-                .setQuantity(20L)
-                .build();
+        BookInfoResponse expected = ModelUtils.defaultBookInfoResponse();
 
         Mono<BookInfoResponse> result = bookService.getById(request);
 
@@ -124,10 +108,7 @@ class BookServiceTest {
 
     @Test
     void updateTest() {
-        UpdateBookRequest request = UpdateBookRequest.newBuilder()
-                .setTitle("UpdatedBook")
-                .setId(UUID.randomUUID().toString())
-                .build();
+        UpdateBookRequest request = ModelUtils.defaultUpdateBookRequest();
 
         Book book = getRandomBook();
 
@@ -146,9 +127,7 @@ class BookServiceTest {
 
     @Test
     void deleteByIdTest() {
-        BookIdRequest request = BookIdRequest.newBuilder()
-                .setId(UUID.randomUUID().toString())
-                .build();
+        BookIdRequest request = ModelUtils.defaultBookIdRequest();
 
         doReturn(Mono.empty()).when(bookRepository).deleteById(UUID.fromString(request.getId()));
 

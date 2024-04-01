@@ -1,7 +1,6 @@
 grpc:
   server:
     port: ${SERVER_PORT:9090}
-
 spring:
   application:
     name: server
@@ -20,5 +19,5 @@ spring:
     password: ${DATASOURCE_PASSWORD}
 logging:
   level:
-    io.r2dbc.postgresql.QUERY: DEBUG # for queries
+    io.r2dbc.postgresql.QUERY: DEBUG
     io.r2dbc.postgresql.PARAM: DEBUG

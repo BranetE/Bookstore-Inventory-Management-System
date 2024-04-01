@@ -6,6 +6,7 @@ Made with Spring framework, gRPC, WebFlux, MapStruct, PostgreSQL and TestContain
 - Java 21
 - Gradle 8.6
 - Spring Boot 3.2.4
+- Citrus Framework 4.2.0
 - gRPC
 - Spring WebFlux
 - R2DBC

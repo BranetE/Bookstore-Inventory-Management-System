@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: server
+  r2dbc:
+    username: r2dbc:postgresql://localhost:5432/book_store
+    password: test
+    url: test
+  data:
+    jdbc:
+      repositories:
+        enabled: true
+  liquibase:
+    enabled: false

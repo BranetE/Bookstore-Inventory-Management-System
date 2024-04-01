@@ -1,0 +1,1 @@
+INSERT INTO books VALUES ('b63db9ad-1314-4d58-8ba6-269780e4232c', 'NewBook', 20, '978-123-456-7890-X', 'John Doe');
