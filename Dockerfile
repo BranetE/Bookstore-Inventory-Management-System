@@ -9,5 +9,5 @@ COPY build.gradle settings.gradle ./
 
 EXPOSE 9090
 
-CMD ["gradle", "bootRun", "x-test"]
+CMD ["gradle", "bootRun"]
 

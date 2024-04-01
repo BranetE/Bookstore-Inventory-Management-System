@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
---changeset OlehKulbaba:1
+-- changeset OlehKulbaba:1
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS books
@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS books
     isbn     varchar(255),
     author varchar(255)
 );
---rollback DROP TABLE books
+-- rollback DROP TABLE books
